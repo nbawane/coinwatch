@@ -4,6 +4,7 @@ from kivy.app import App
 from kivy.lang import Builder
 from kivy.uix.boxlayout import BoxLayout
 from kivy.uix.recycleview import RecycleView
+import priceextractor as price
 """
 main.py
 This would be the home interface of intended app
@@ -12,31 +13,44 @@ kv = """
 <Row@BoxLayout>:
     canvas.before:
         Color:
-            rgba: 0.5, 0.5, 0.5, 1
+            rgba: 0.1, 0.1, 0.1, 1
         Rectangle:
             size: self.size
             pos: self.pos
-    value1:''
-    value2:''
-    value3:''
-    value4:''
+    icon:''
+    coin:''
+    buybid:''
+    bbvalue:''
+    sellask:''
+    savalue:''
     BoxLayout:
-    	orientation:'vertical'
-    	BoxLayout:
-    		orientation:'horizontal'
-    		Label:
-    			font_size:'18sp'
-    			text:root.value1
-    		Label:
-    			text:root.value2
+    	orientation:'horizontal'
 		BoxLayout:
-    		orientation:'horizontal'
+    		orientation:'vertical'
+			Image:
+				source:root.icon
+				allow_strech:True
     		Label:
-    			text:root.value3
-    		Label:
-    			text:root.value4
-    			
+    			font_size:'16sp'
+    			bold:True
+    			text:root.coin
 
+    	BoxLayout:
+    		orientation:'vertical'
+    		Label:
+    			text:root.sellask
+    		Label:
+    			color:1,0,0,1
+    			text:root.savalue
+    			
+		BoxLayout:
+    		orientation:'vertical'
+    		Label:
+    			text:root.buybid
+    		Label:
+    			color:0,1,0,1
+    			text:root.bbvalue
+    			
 
 <Best>:
     canvas:
@@ -60,16 +74,22 @@ Builder.load_string(kv)
 
 class Best(RecycleView):
 	def __init__(self,*args,**kwargs):
-		datval1=['ALFA','BETA','GAMA','BETA']
-		datval2=['100','200','300','400']
-		datval3=['sell']*4
-		datval4=['30%']*4
+
+		currency_details = price.Extractprice()
+
+		# zebpay = currency_details.zebpay
+		coindelta = currency_details.coindelta
+
 		self.data = []
 		super(Best,self).__init__(*args,**kwargs)
-		for i in range(len(datval1)):
-			self.data.append({'value1':datval1[i],'value2':datval2[i],'value3':datval3[i],'value4':datval4[i]})
+		for coin in coindelta.keys():
+			icon_path = 'icon/{}.png'.format(coin)
+			self.data.append({'icon':icon_path,'coin':coin,'sellask':'Sell', 'savalue':str(coindelta[coin]['Ask']),\
+							  'buybid':'Buy', 'bbvalue':str(coindelta[coin]['Bid'])})
+			# self.icon = '{}.png'.format(coin)
 			#data to recycleview should be given in as a dictionary, define label name in KV and create the
 			#layout, the same layoout will be shown in in view of recycleview
+
 
 class BestApp(App):
     def build(self):
