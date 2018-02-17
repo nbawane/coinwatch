@@ -13,7 +13,7 @@ kv = """
 <Row@BoxLayout>:
     canvas.before:
         Color:
-            rgba: 0.1, 0.1, 0.1,0.91
+            rgba: 0.3, 0.3, 0.3,1
         Rectangle:
             size: self.size
             pos: self.pos
@@ -35,23 +35,27 @@ kv = """
 				source:root.icon
 
     		Label:
-    			font_size:'16sp'
+    			font_size:'14sp'
     			bold:True
     			text:root.coin
 
     	BoxLayout:
     		orientation:'vertical'
     		Label:
+    			font_size:'13sp'
     			text:root.sellask
     		Label:
+    			font_size:'14sp'
     			color:1,0,0,1
     			text:root.savalue
     			
 		BoxLayout:
     		orientation:'vertical'
     		Label:
+    			font_size:'13sp'
     			text:root.buybid
     		Label:
+    			font_size:'14sp'
     			color:0,1,0,1
     			text:root.bbvalue
     			
@@ -80,18 +84,14 @@ class Best(RecycleView):
 	def __init__(self,*args,**kwargs):
 
 		currency_details = price.Extractprice()
-
-		# zebpay = currency_details.zebpay
-		# coindelta = currency_details.coindelta
-		buyucoin = currency_details.get_buyucoin_prices()
-		coindelta = buyucoin
+		coindelta=currency_details.universal_dict
 		self.data = []
 		super(Best,self).__init__(*args,**kwargs)
 		for coin in coindelta.keys():
 			icon_path = 'icon/{}.png'.format(coin)
 			self.data.append({'icon':icon_path,'coin':coin,'sellask':'Sell', 'savalue':str(coindelta[coin]['Sell']),\
 							  'buybid':'Buy', 'bbvalue':str(coindelta[coin]['Buy'])})
-			# self.icon = '{}.png'.format(coin)
+
 			#data to recycleview should be given in as a dictionary, define label name in KV and create the
 			#layout, the same layoout will be shown in in view of recycleview
 

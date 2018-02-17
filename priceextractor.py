@@ -23,8 +23,10 @@ class Extractprice:
         self.coindelta = self.get_coindelta_prices()
         self.zebpay = self.get_zebpay_prices()
         self.buyucoin = self.get_buyucoin_prices()
-        self.all_coins = self.get_all_coins()   #list containing all the coins avalable across all the exchanges
-        self.universal_dict = {}    #this would contain avg of all the buy/sells of coins
+        self.coinome = self.get_coinome_prices()
+        self.coinsecure = self.get_coinsecure_prices()
+        self.universal_dict={}
+        self.universal_dict = self.get_avg_prices(self.coindelta,self.zebpay,self.buyucoin,self.coinome,self.coinsecure)    #this would contain avg of all the buy/sells of coins
 
     def get_ethexindia_prices(self):
         req1 = requests.get(ETHEXINDIA)
@@ -44,26 +46,26 @@ class Extractprice:
         return coinomedict
 
     def get_buyucoin_prices(self):
-        # req1 = requests.get(BUYUCOIN)
-        # buyudata = req1.json()
-        # buyucoinprice={}
-        # data = buyudata['BuyUcoin_data'][0]
-        # coin = None
-        # for key in data:
-        #     coin = key.split('_')[0].upper()
-        #     if coin is None or coin not in buyucoinprice.keys():
-        #         temp_coin = coin
-        #         buyucoinprice[coin] = {}
-		#
-        #     if 'sell' in key:
-        #         buyucoinprice[coin].update({'Sell': data[key]})
-		#
-        #     if 'buy' in key:
-        #         buyucoinprice[coin].update({'Buy': data[key]})
-		#
-        # return buyucoinprice
+        req1 = requests.get(BUYUCOIN)
+        buyudata = req1.json()
+        buyucoinprice={}
+        data = buyudata['BuyUcoin_data'][0]
+        coin = None
+        for key in data:
+            coin = key.split('_')[0].upper()
+            if coin is None or coin not in buyucoinprice.keys():
+                temp_coin = coin
+                buyucoinprice[coin] = {}
 
-        return {'ARK': {'Buy': '380', 'Sell': '286'}, 'BAT': {'Buy': '37.71', 'Sell': '27.47'}, 'BCC': {'Buy': '110923', 'Sell': '90673'}, 'BTC': {'Buy': '788551', 'Sell': '670152'}, 'BTS': {'Buy': '24.89', 'Sell': '13.23'}, 'CLOAK': {'Buy': '812', 'Sell': '598'}, 'CVC': {'Buy': '36.19', 'Sell': '28.27'}, 'DASH': {'Buy': '53677', 'Sell': '44489'}, 'DGB': {'Buy': '3.85', 'Sell': '2.8'}, 'DOGE': {'Buy': '0.58', 'Sell': '0.4'}, 'ETC': {'Buy': '2589', 'Sell': '1967'}, 'ETH': {'Buy': '71763', 'Sell': '57643'}, 'FCT': {'Buy': '2694', 'Sell': '2101'}, 'GNT': {'Buy': '37.06', 'Sell': '28.18'}, 'LSK': {'Buy': '2529', 'Sell': '1980'}, 'LTC': {'Buy': '16873', 'Sell': '13575'}, 'NEO': {'Buy': '10000', 'Sell': '7711'}, 'NXT': {'Buy': '21.02', 'Sell': '14.96'}, 'OMG': {'Buy': '1369', 'Sell': '1058'}, 'PAY': {'Buy': '164', 'Sell': '123'}, 'PIVX': {'Buy': '486', 'Sell': '379'}, 'QTUM': {'Buy': '2435', 'Sell': '1907'}, 'REP': {'Buy': '4079', 'Sell': '3201'}, 'SC': {'Buy': '2.47', 'Sell': '1.78'}, 'STEEM': {'Buy': '333', 'Sell': '257'}, 'STRAT': {'Buy': '717', 'Sell': '548'}, 'XEM': {'Buy': '43.9', 'Sell': '33.66'}, 'XMR': {'Buy': '23742', 'Sell': '19178'}, 'XRP': {'Buy': '87.28', 'Sell': '69.89'}, 'ZEC': {'Buy': '35810', 'Sell': '29553'}}
+            if 'sell' in key:
+                buyucoinprice[coin].update({'Sell': data[key]})
+
+            if 'buy' in key:
+                buyucoinprice[coin].update({'Buy': data[key]})
+
+        return buyucoinprice
+
+        # return {'ARK': {'Buy': '380', 'Sell': '286'}, 'BAT': {'Buy': '37.71', 'Sell': '27.47'}, 'BCC': {'Buy': '110923', 'Sell': '90673'}, 'BTC': {'Buy': '788551', 'Sell': '670152'}, 'BTS': {'Buy': '24.89', 'Sell': '13.23'}, 'CLOAK': {'Buy': '812', 'Sell': '598'}, 'CVC': {'Buy': '36.19', 'Sell': '28.27'}, 'DASH': {'Buy': '53677', 'Sell': '44489'}, 'DGB': {'Buy': '3.85', 'Sell': '2.8'}, 'DOGE': {'Buy': '0.58', 'Sell': '0.4'}, 'ETC': {'Buy': '2589', 'Sell': '1967'}, 'ETH': {'Buy': '71763', 'Sell': '57643'}, 'FCT': {'Buy': '2694', 'Sell': '2101'}, 'GNT': {'Buy': '37.06', 'Sell': '28.18'}, 'LSK': {'Buy': '2529', 'Sell': '1980'}, 'LTC': {'Buy': '16873', 'Sell': '13575'}, 'NEO': {'Buy': '10000', 'Sell': '7711'}, 'NXT': {'Buy': '21.02', 'Sell': '14.96'}, 'OMG': {'Buy': '1369', 'Sell': '1058'}, 'PAY': {'Buy': '164', 'Sell': '123'}, 'PIVX': {'Buy': '486', 'Sell': '379'}, 'QTUM': {'Buy': '2435', 'Sell': '1907'}, 'REP': {'Buy': '4079', 'Sell': '3201'}, 'SC': {'Buy': '2.47', 'Sell': '1.78'}, 'STEEM': {'Buy': '333', 'Sell': '257'}, 'STRAT': {'Buy': '717', 'Sell': '548'}, 'XEM': {'Buy': '43.9', 'Sell': '33.66'}, 'XMR': {'Buy': '23742', 'Sell': '19178'}, 'XRP': {'Buy': '87.28', 'Sell': '69.89'}, 'ZEC': {'Buy': '35810', 'Sell': '29553'}}
 
     def get_coindelta_prices(self):
         '''
@@ -71,33 +73,33 @@ class Extractprice:
         returns dictionary of coin and current price
         dictionary format :{COIN_NAME_IN_CAP : price in INR}
         '''
-        # req1 = requests.get(COINDELTA)
-        # data = req1.json()
-        # coindeltadict = {}
-        # for fields in data :
-        #     if 'inr' in (fields['MarketName']):
-        #         coindeltadict[(fields['MarketName'].split('-')[0]).upper()] = {'Last':fields['Last'],'Sell':fields['Ask'],'Buy':fields['Bid']}
-		#
-        # return coindeltadict
+        req1 = requests.get(COINDELTA)
+        data = req1.json()
+        coindeltadict = {}
+        for fields in data :
+            if 'inr' in (fields['MarketName']):
+                coindeltadict[(fields['MarketName'].split('-')[0]).upper()] = {'Last':fields['Last'],'Sell':fields['Ask'],'Buy':fields['Bid']}
+
+        return coindeltadict
         # temp_list={}
-        temp_list = {'BTC': {'Last': 708004.02, 'Sell': 712396.9, 'Buy': 708501.0}, 'ETH': {'Last': 62898.0, 'Sell': 62898.0, 'Buy': 62640.0}, 'LTC': {'Last': 14898.0, 'Sell': 14850.0, 'Buy': 14800.0}, 'OMG': {'Last': 1175.0, 'Sell': 1175.0, 'Buy': 1174.0}, 'QTUM': {'Last': 2123.99, 'Sell': 2123.99, 'Buy': 2110.1}, 'XRP': {'Last': 75.72, 'Sell': 75.8, 'Buy': 75.79}, 'BCH': {'Last': 99697.99, 'Sell': 99697.99, 'Buy': 99202.0}}
-        return temp_list
+        # temp_list = {'BTC': {'Last': 708004.02, 'Sell': 712396.9, 'Buy': 708501.0}, 'ETH': {'Last': 62898.0, 'Sell': 62898.0, 'Buy': 62640.0}, 'LTC': {'Last': 14898.0, 'Sell': 14850.0, 'Buy': 14800.0}, 'OMG': {'Last': 1175.0, 'Sell': 1175.0, 'Buy': 1174.0}, 'QTUM': {'Last': 2123.99, 'Sell': 2123.99, 'Buy': 2110.1}, 'XRP': {'Last': 75.72, 'Sell': 75.8, 'Buy': 75.79}, 'BCH': {'Last': 99697.99, 'Sell': 99697.99, 'Buy': 99202.0}}
+        # return temp_list
 
     def get_zebpay_prices(self):
-        # zebpaydict = {}
-        # coins = ['btc','ltc','xrp','bch']
-        # for coin in coins:
-        #     zebpayreq = ZEBPAY.format(coin)
-        #     req1 = requests.get(zebpayreq)
-        #     data = req1.json()
-        #     zebpaydict[data['virtualCurrency'].upper()]={'Sell':data['sell'],'Buy':data['buy']}
-        # return zebpaydict
-        temp_testing = {
-                        'BTC':{'Sell':'900000','Buy':'899999'},\
-                        'LTC':{'Sell':'14500','Buy':'17000'},\
-                        'XRP':{'Sell':'30','Buy':'33'}
-                       }
-        return temp_testing
+        zebpaydict = {}
+        coins = ['btc','ltc','xrp','bch']
+        for coin in coins:
+            zebpayreq = ZEBPAY.format(coin)
+            req1 = requests.get(zebpayreq)
+            data = req1.json()
+            zebpaydict[data['virtualCurrency'].upper()]={'Sell':data['sell'],'Buy':data['buy']}
+        return zebpaydict
+        # temp_testing = {
+        #                 'BTC':{'Sell':'900000','Buy':'899999'},\
+        #                 'LTC':{'Sell':'14500','Buy':'17000'},\
+        #                 'XRP':{'Sell':'30','Buy':'33'}
+        #                }
+        # return temp_testing
 
     def get_koinex_prices(self):
         '''
@@ -130,8 +132,7 @@ class Extractprice:
         coinsecuredict['BTC'] = {'Last':data['message']['lastPrice']/100, 'Sell':data['message']['ask']/100, 'Buy':data['message']['bid']/100}
         return coinsecuredict
 
-    def price_manipulation(self):
-        pass
+
 
     def get_all_coins(self,*args):
         '''
@@ -171,14 +172,16 @@ class Extractprice:
                 except (KeyError):
                     pass
             try:
-                self.universal_dict[coin]={'Sell':str(float(sell)/coin_count),'Buy':str(float(buy)/coin_count)}
+                avg_sell = "%.2f" % (float(sell)/coin_count ) #convert float result to 2 decimal
+                avg_buy = "%.2f" % (float(buy)/coin_count)
+                self.universal_dict[coin]={'Sell':avg_sell,'Buy':avg_buy}
             except ZeroDivisionError:
                 pass
         return self.universal_dict
 
 
-priceobj = Extractprice()
-# print (priceobj.get_avg_prices(priceobj.buyucoin,priceobj.coindelta,priceobj.zebpay))
+# priceobj = Extractprice()
+# print (priceobj.get_avg_prices(priceobj.buyucoin,priceobj.coindelta,priceobj.zebpay,priceobj.coinome,priceobj.coinsecure))
 
 # print(priceobj.get_coindelta_prices())    #working fine
 # print(priceobj.get_coinsecure_prices())     #working fine
@@ -186,7 +189,4 @@ priceobj = Extractprice()
 # print(priceobj.get_zebpay_prices()  )     #working fine
 # print(priceobj.get_buyucoin_prices())     #working fine
 # print(priceobj.get_ethexindia_prices())
-priceobj.get_coinome_prices()
-# print(priceobj.coindelta)
-# print(priceobj.zebpay)
-# print(priceobj.get_all_coins())
+# priceobj.get_coinome_prices()                  #working fine
