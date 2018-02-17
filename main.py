@@ -23,13 +23,17 @@ kv = """
     bbvalue:''
     sellask:''
     savalue:''
+
     BoxLayout:
     	orientation:'horizontal'
 		BoxLayout:
     		orientation:'vertical'
 			Image:
+				pos_hint: {'center_x': 0.5}
+				size_hint: None,None
+				size:25,25
 				source:root.icon
-				allow_strech:True
+
     		Label:
     			font_size:'16sp'
     			bold:True
@@ -61,7 +65,7 @@ kv = """
             pos: self.pos
 	viewclass: 'Row'
 	RecycleBoxLayout:
-		default_size: None, dp(56)
+		default_size: None, dp(60)
 		default_size_hint: 1, None
 		size_hint_y: None
 		height: self.minimum_height

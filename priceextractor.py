@@ -40,8 +40,23 @@ class Extractprice:
 
     def get_buyucoin_prices(self):
         req1 = requests.get(BUYUCOIN)
-        data = req1.json()
-        print(data)
+        buyudata = req1.json()
+        buyucoinprice={}
+        data = buyudata['BuyUcoin_data'][0]
+        coin = None
+        for key in data:
+            coin = key.split('_')[0].upper()
+            if coin is None or coin not in buyucoinprice.keys():
+                temp_coin = coin
+                buyucoinprice[coin] = {}
+
+            if 'sell' in key:
+                buyucoinprice[coin].update({'Sell': data[key]})
+
+            if 'buy' in key:
+                buyucoinprice[coin].update({'Buy': data[key]})
+
+        return buyucoinprice
 		#
         # buyucoindict = {}
         # data = data['BuyUcoin_data']
@@ -87,11 +102,11 @@ class Extractprice:
         returns dictionary of coin and current price
         dictionary format :{COIN_NAME_IN_CAP : price in INR
         '''
-        req1 = requests.get(KOINEX)
-        data = req1.json()
-        koinexdict = data['prices']
-        return koinexdict
-
+        # req1 = requests.get(KOINEX)
+        # data = req1.json()
+        # koinexdict = data['prices']
+        # return koinexdict
+        return {'BTC': '691001.0', 'ETH': '62300.0', 'XRP': '75.05', 'BCH': '99500.0', 'LTC': '14550.0', 'MIOTA': 139.44, 'OMG': 1151.39, 'GNT': 30.62}
     def get_coinsecure_prices(self):
         '''
         returns dictionary of coin and current price
@@ -123,12 +138,13 @@ class Extractprice:
             univ_dict.update(i)
         return univ_dict
 
-# priceobj = Extractprice()
+
+priceobj = Extractprice()
 # print(priceobj.get_coindelta_prices())    #working fine
 # # # print(priceobj.get_coinsecure_prices())   #working fine
-# # # print (priceobj.get_koinex_prices())      #working fine
-# # print(priceobj.get_zebpay_prices()  )            #working fine
-# # # print(priceobj.get_buyucoin_prices())     #working fine,need to saggrigate all coins
+# print (priceobj.get_koinex_prices())      #working fine
+# print(priceobj.get_zebpay_prices()  )            #working fine
+print(priceobj.get_buyucoin_prices())     #working fine,need to saggrigate all coins
 # # # print(priceobj.get_ethexindia_prices())
 # # # priceobj.get_coinome_prices()               #working fine, need to saggrigate all coins
 # #
